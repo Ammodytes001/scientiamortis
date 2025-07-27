@@ -1,0 +1,1280 @@
+
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Recupera i dati dal form
+    $name = strip_tags(trim($_POST["name"]));
+    $email = filter_var(trim($_POST["email"]), FILTER_SANITIZE_EMAIL);
+    $phone = strip_tags(trim($_POST["phone"]));
+    $service = strip_tags(trim($_POST["service"]));
+    $message = strip_tags(trim($_POST["message"]));
+
+    // Verifica i dati
+    if (empty($name) || empty($message) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        http_response_code(400);
+        echo "Si è verificato un errore nell'invio. Per favore controlla i dati inseriti.";
+        exit;
+    }
+
+    // Destinatario
+    $recipient = "scientia_mortis@outlook.it";
+    
+    // Oggetto della mail
+    $subject = "Nuovo messaggio da $name via Scientia Mortis";
+    
+    // Costruisci il contenuto della mail
+    $email_content = "Nome: $name\n";
+    $email_content .= "Email: $email\n";
+    $email_content .= "Telefono: $phone\n";
+    $email_content .= "Servizio di interesse: $service\n\n";
+    $email_content .= "Messaggio:\n$message\n";
+    
+    // Intestazioni della mail
+    $email_headers = "From: $name <$email>";
+
+    // Invia la mail
+    if (mail($recipient, $subject, $email_content, $email_headers)) {
+        http_response_code(200);
+        echo "Grazie! Il tuo messaggio è stato inviato con successo.";
+    } else {
+        http_response_code(500);
+        echo "Ops! Qualcosa è andato storto e non siamo riusciti a inviare il tuo messaggio.";
+    }
+} else {
+    http_response_code(403);
+    echo "Si è verificato un problema con l'invio, per favore riprova.";
+}
+?>
+
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scientia Mortis - Arte e Scienza nella Conservazione Animale</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        magenta: '#CC0066',
+                        ciano: '#00FFFF',
+                        dark: '#111111',
+                    },
+                    fontFamily: {
+                        sans: ['Roboto', 'sans-serif'],
+                        serif: ['Roboto', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111111;
+            color: white;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(255,0,255,0.15) 0%, rgba(0,255,255,0.15) 100%);
+        }
+        
+        .gallery-item {
+            transition: all 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.2), 0 5px 10px rgba(255, 0, 255, 0.2);
+        }
+        
+        .language-selector {
+            transition: all 0.3s ease;
+        }
+        
+        .language-selector:hover {
+            color: #00FFFF;
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #00FFFF;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .active-nav::after {
+            width: 100%;
+            background-color: #FF00FF;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #FF00FF;
+        }
+        
+        .technique-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.2), 0 5px 10px rgba(255, 0, 255, 0.2);
+        }
+        
+        .skip-link {
+            position: absolute;
+            left: -9999px;
+            top: 0;
+            background: #FF00FF;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+        }
+        
+        .skip-link:focus {
+            left: 0;
+        }
+        
+        /* Dark mode toggle styles */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #00FFFF;
+        }
+        
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #00FFFF;
+        }
+        
+        /* Accessibility focus styles */
+        *:focus {
+            outline: 2px solid #FF00FF;
+            outline-offset: 2px;
+        }
+        
+        /* Smooth transitions for theme changes */
+        .theme-transition {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+    </style>
+</head>
+<body class="theme-transition">
+    <!-- Cookie Consent Banner -->
+    <div id="cookie-consent-banner" class="fixed bottom-0 left-0 right-0 bg-dark border-t border-ciano/20 p-4 z-50 hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <p class="text-gray-300 mb-4 md:mb-0">
+                    Questo sito utilizza cookie per migliorare la tua esperienza. Leggi la nostra 
+                    <a href="/cookie-policy" class="text-ciano hover:underline">Cookie Policy</a>.
+                </p>
+                <div class="flex space-x-4">
+                    <button id="cookie-consent-accept" class="bg-magenta hover:bg-magenta/90 text-white px-4 py-2 rounded-md text-sm font-medium">
+                        Accetta tutti
+                    </button>
+                    <button id="cookie-consent-reject" class="bg-dark border border-ciano/20 hover:bg-ciano/10 text-white px-4 py-2 rounded-md text-sm font-medium">
+                        Rifiuta
+                    </button>
+                    <button id="cookie-consent-customize" class="bg-dark border border-ciano/20 hover:bg-ciano/10 text-white px-4 py-2 rounded-md text-sm font-medium">
+                        Personalizza
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Skip to content link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- Language selector floating button -->
+    <div class="fixed bottom-4 right-4 z-50">
+        <div class="relative group">
+            <button id="language-toggle" class="bg-dark border-2 border-magenta text-white rounded-full w-12 h-12 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-ciano">
+                <i class="fas fa-globe text-xl"></i>
+            </button>
+            <div id="language-dropdown" class="hidden group-hover:block absolute bottom-full right-0 mb-2 w-48 bg-dark border border-ciano rounded-lg shadow-lg">
+                <a href="#" class="block px-4 py-2 text-white hover:bg-magenta language-selector" data-lang="it">Italiano</a>
+                <a href="#" class="block px-4 py-2 text-white hover:bg-magenta language-selector" data-lang="en">English</a>
+                <a href="#" class="block px-4 py-2 text-white hover:bg-magenta language-selector" data-lang="fr">Français</a>
+                <a href="#" class="block px-4 py-2 text-white hover:bg-magenta language-selector" data-lang="de">Deutsch</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="bg-dark border-b border-ciano/20 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="#" class="flex-shrink-0 flex items-center">
+                        <span class="text-ciano text-2xl font-serif font-bold">Scientia</span>
+                        <span class="text-magenta text-2xl font-serif font-bold">Mortis</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="nav-link text-white px-3 py-2 text-sm font-medium active-nav">Home</a>
+                    <a href="#gallery" class="nav-link text-white px-3 py-2 text-sm font-medium">Galleria</a>
+                    <a href="#services" class="nav-link text-white px-3 py-2 text-sm font-medium">Servizi</a>
+                    <a href="#ethics" class="nav-link text-white px-3 py-2 text-sm font-medium">Etica</a>
+                    <a href="#about" class="nav-link text-white px-3 py-2 text-sm font-medium">About</a>
+                    <a href="#contact" class="nav-link text-white px-3 py-2 text-sm font-medium">Contatti</a>
+                </div>
+                <div class="-mr-2 flex items-center md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-dark border-t border-ciano/20">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-gray-900">Home</a>
+                <a href="#gallery" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-gray-700">Galleria</a>
+                <a href="#services" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-gray-700">Servizi</a>
+                <a href="#ethics" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-gray-700">Etica</a>
+                <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-gray-700">About</a>
+                <a href="#contact" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-gray-700">Contatti</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section id="home" class="hero-gradient min-h-screen flex items-center justify-center relative overflow-hidden" style="background-image: url('https://images.unsplash.com/photo-1575505586569-646b2ca898fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80'); background-size: cover; background-position: center; background-attachment: fixed;">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-dark/70 to-dark"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative z-10">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-6xl font-serif font-bold mb-6">
+                    <span class="text-ciano">Scientia</span>
+                    <span class="text-magenta">Mortis</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-white max-w-3xl mx-auto mb-10">
+                    L'arte e la scienza si incontrano nella conservazione della vita oltre la morte
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="#gallery" class="bg-magenta hover:bg-magenta/90 text-white px-8 py-3 rounded-full font-medium transition duration-300 transform hover:scale-105">
+                        Esplora la Galleria
+                    </a>
+                    <a href="#services" class="bg-ciano hover:bg-ciano/90 text-dark px-8 py-3 rounded-full font-medium transition duration-300 transform hover:scale-105">
+                        Scopri i Servizi
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- About Techniques Section -->
+        <section class="py-20 bg-dark">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4">
+                        <span class="text-ciano">Tecniche di</span>
+                        <span class="text-magenta"> Conservazione</span>
+                    </h2>
+                    <p class="text-gray-300 max-w-3xl mx-auto">
+                        Esplora i metodi scientifici che trasformano la morte in arte e conoscenza
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Technique Card 1 -->
+                    <div class="bg-dark border border-ciano/20 rounded-lg p-6 transition duration-300 technique-card">
+                        <div class="text-magenta text-4xl mb-4">
+                            <i class="fas fa-vial"></i>
+                        </div>
+                        <h3 class="text-xl font-serif font-bold text-white mb-3">Diafanizzazione</h3>
+                        <p class="text-gray-300">
+                            Un processo che rende i tessuti animali trasparenti mentre colora le ossa e la cartilagine, creando esemplari didattici affascinanti.
+                        </p>
+                    </div>
+                    
+                    <!-- Technique Card 2 -->
+                    <div class="bg-dark border border-ciano/20 rounded-lg p-6 transition duration-300 technique-card">
+                        <div class="text-magenta text-4xl mb-4">
+                            <i class="fas fa-atom"></i>
+                        </div>
+                        <h3 class="text-xl font-serif font-bold text-white mb-3">Plastinazione</h3>
+                        <p class="text-gray-300">
+                            Tecnica rivoluzionaria che sostituisce i liquidi corporei con polimeri, preservando i tessuti in modo permanente senza alterarne la struttura.
+                        </p>
+                    </div>
+                    
+                    <!-- Technique Card 3 -->
+                    <div class="bg-dark border border-ciano/20 rounded-lg p-6 transition duration-300 technique-card">
+                        <div class="text-magenta text-4xl mb-4">
+                            <i class="fas fa-bone"></i>
+                        </div>
+                        <h3 class="text-xl font-serif font-bold text-white mb-3">Osteologia</h3>
+                        <p class="text-gray-300">
+                            L'arte di preparare, conservare e studiare gli scheletri, rivelando l'architettura interna della vita animale.
+                        </p>
+                    </div>
+                    
+                    <!-- Technique Card 4 -->
+                    <div class="bg-dark border border-ciano/20 rounded-lg p-6 transition duration-300 technique-card">
+                        <div class="text-magenta text-4xl mb-4">
+                            <i class="fas fa-flask"></i>
+                        </div>
+                        <h3 class="text-xl font-serif font-bold text-white mb-3">Conservazione in Alcool</h3>
+                        <p class="text-gray-300">
+                            Metodo tradizionale che utilizza soluzioni alcoliche per preservare esemplari mantenendone le caratteristiche morfologiche originali.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Gallery Section -->
+        <section id="gallery" class="py-20 bg-dark border-t border-b border-ciano/20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4">
+                        <span class="text-magenta">Galleria</span>
+                        <span class="text-ciano"> Fotografica</span>
+                    </h2>
+                    <p class="text-gray-300 max-w-3xl mx-auto">
+                        Una raccolta dei nostri lavori più significativi, ciascuno con una storia da raccontare
+                    </p>
+                </div>
+                
+                <!-- Gallery Filters -->
+                <div class="flex flex-wrap justify-center gap-3 mb-12">
+                    <button class="gallery-filter px-4 py-2 rounded-full border border-magenta text-magenta hover:bg-magenta hover:text-dark transition" data-category="all">
+                        Tutti
+                    </button>
+                    <button class="gallery-filter px-4 py-2 rounded-full border border-ciano text-ciano hover:bg-ciano hover:text-dark transition" data-category="diafanizzazione">
+                        Diafanizzazione
+                    </button>
+                    <button class="gallery-filter px-4 py-2 rounded-full border border-magenta text-magenta hover:bg-magenta hover:text-dark transition" data-category="plastinazione">
+                        Plastinazione
+                    </button>
+                    <button class="gallery-filter px-4 py-2 rounded-full border border-ciano text-ciano hover:bg-ciano hover:text-dark transition" data-category="osteologia">
+                        Osteologia
+                    </button>
+                    <button class="gallery-filter px-4 py-2 rounded-full border border-magenta text-magenta hover:bg-magenta hover:text-dark transition" data-category="alcool">
+                        Alcool
+                    </button>
+                </div>
+                
+                <!-- Gallery Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="gallery-grid">
+                    <!-- Gallery items will be loaded here dynamically -->
+                </div>
+
+                <!-- Load More Button -->
+                <div class="text-center mt-12" id="load-more-container">
+                    <button id="load-more-btn" class="bg-magenta hover:bg-magenta/90 text-white px-6 py-3 rounded-lg font-medium transition hidden">
+                        Mostrami di più
+                    </button>
+                </div>
+                
+                <!-- Gallery Modal -->
+                <div id="gallery-modal" class="fixed inset-0 bg-black/90 z-50 hidden items-center justify-center p-4">
+                    <div class="relative max-w-4xl w-full bg-dark rounded-lg overflow-hidden border border-ciano/30">
+                        <button id="close-modal" class="absolute top-4 right-4 text-white text-2xl z-10 hover:text-magenta">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <div class="flex flex-col lg:flex-row h-full">
+                            <div class="lg:w-2/3 h-96 lg:h-auto">
+                                <img id="modal-image" src="" alt="" class="w-full h-full object-cover">
+                            </div>
+                            <div class="lg:w-1/3 p-6 overflow-y-auto max-h-96 lg:max-h-full">
+                                <h3 id="modal-title" class="text-2xl font-serif font-bold text-magenta mb-2"></h3>
+                                <p id="modal-date" class="text-ciano text-sm mb-4"></p>
+                                <p id="modal-description" class="text-gray-300"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Services Section -->
+        <section id="services" class="py-20 bg-dark">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4">
+                        <span class="text-ciano">Servizi</span>
+                        <span class="text-magenta"> e Memoriali</span>
+                    </h2>
+                    <p class="text-gray-300 max-w-3xl mx-auto">
+                        Trasforma il ricordo del tuo animale domestico in un'opera d'arte scientifica
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <!-- Memorial Services -->
+                    <div class="bg-dark border border-magenta/20 rounded-lg p-8">
+                        <h3 class="text-2xl font-serif font-bold text-magenta mb-6">Memoriali Personalizzati</h3>
+                        
+                        <div class="space-y-8 mb-8">
+                            <!-- Memorial 1 -->
+                            <div class="border border-ciano/30 rounded-lg overflow-hidden">
+                                <div class="h-64 bg-gradient-to-br from-magenta/20 to-ciano/20 flex items-center justify-center">
+                                    <i class="fas fa-paw text-6xl text-ciano/50"></i>
+                                </div>
+                                <div class="p-6">
+                                    <h4 class="text-xl font-bold text-white mb-2">Memoriale per Fido</h4>
+                                    <p class="text-gray-300 mb-4">Cane, Labrador - Diafanizzazione</p>
+                                    <p class="text-gray-300">
+                                        Fido è stato un membro amato della famiglia per 12 anni. Questo memoriale cattura la sua essenza attraverso la diafanizzazione, una tecnica che rende i tessuti trasparenti mentre colora ossa e cartilagine. Il processo ha richiesto 3 mesi di lavoro meticoloso per preservare ogni dettaglio anatomico. L'esemplare è montato in una teca di vetro con illuminazione LED che esalta la trasparenza delle strutture.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <!-- Memorial 2 -->
+                            <div class="border border-ciano/30 rounded-lg overflow-hidden">
+                                <div class="h-64 bg-gradient-to-br from-magenta/20 to-ciano/20 flex items-center justify-center">
+                                    <i class="fas fa-cat text-6xl text-ciano/50"></i>
+                                </div>
+                                <div class="p-6">
+                                    <h4 class="text-xl font-bold text-white mb-2">Memoriale per Whiskers</h4>
+                                    <p class="text-gray-300 mb-4">Gatto, Siamese - Osteologia</p>
+                                    <p class="text-gray-300">
+                                        Whiskers era un gatto siamese di 15 anni con un mantello distintivo. Per questo memoriale abbiamo scelto la preparazione osteologica completa. Lo scheletro è stato pulito con metodi enzimatici, sgrassato e montato in una posa naturale che ricorda il suo modo caratteristico di sedersi. La colonna vertebrale è stata articolata con fili d'acciaio inossidabile per garantire durabilità. L'intero processo ha richiesto 4 mesi, inclusa la creazione di una base personalizzata in legno di noce con una targa incisa.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <!-- Memorial 3 -->
+                            <div class="border border-ciano/30 rounded-lg overflow-hidden">
+                                <div class="h-64 bg-gradient-to-br from-magenta/20 to-ciano/20 flex items-center justify-center">
+                                    <i class="fas fa-dove text-6xl text-ciano/50"></i>
+                                </div>
+                                <div class="p-6">
+                                    <h4 class="text-xl font-bold text-white mb-2">Memoriale per Sky</h4>
+                                    <p class="text-gray-300 mb-4">Pappagallo, Ara - Plastinazione</p>
+                                    <p class="text-gray-300">
+                                        Sky era un pappagallo Ara dalle piume vivaci. Abbiamo scelto la plastinazione per preservare sia la struttura scheletrica che le caratteristiche esterne. Le piume sono state trattate con una soluzione speciale prima del processo di plastinazione per mantenere i colori brillanti. Il risultato è un esemplare che sembra quasi vivo, con ogni dettaglio delle piume e della struttura anatomica perfettamente conservato. La teca include un posatoio naturale e una placca con il nome e gli anni di vita di Sky.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-8 space-y-4">
+                            <a href="#contact" class="inline-block bg-magenta hover:bg-magenta/90 text-white px-6 py-3 rounded-lg font-medium transition">
+                                Richiedi un Memoriale
+                            </a>
+                            <button id="load-more-memorials" class="bg-magenta hover:bg-magenta/90 text-white px-6 py-3 rounded-lg font-medium transition hidden">
+                                Mostrami di più
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-magenta/20 flex items-center justify-center text-magenta mr-4 mt-1">
+                                    <i class="fas fa-paw"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-medium text-white mb-1">Memoriale in Ombra</h4>
+                                    <p class="text-gray-300">
+                                        Un'elegante scatola ombra che contiene l'esemplare perfettamente conservato, accompagnato da una targa personalizzata.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-magenta/20 flex items-center justify-center text-magenta mr-4 mt-1">
+                                    <i class="fas fa-bone"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-medium text-white mb-1">Scheletro Artistico</h4>
+                                    <p class="text-gray-300">
+                                        Lo scheletro del tuo animale preparato e montato in una posa naturale, perfetto per esposizione in vetrina.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-magenta/20 flex items-center justify-center text-magenta mr-4 mt-1">
+                                    <i class="fas fa-vial"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-medium text-white mb-1">Diafanizzazione</h4>
+                                    <p class="text-gray-300">
+                                        Un processo che rende i tessuti trasparenti mentre colora ossa e cartilagine, creando un pezzo unico di arte scientifica.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Products for Sale -->
+                    <div class="bg-dark border border-ciano/20 rounded-lg p-8">
+                        <h3 class="text-2xl font-serif font-bold text-ciano mb-6">Opere in Vendita</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="border border-ciano/30 rounded-lg overflow-hidden">
+                                <div class="h-48 bg-gradient-to-br from-magenta/20 to-ciano/20 flex items-center justify-center">
+                                    <i class="fas fa-image text-4xl text-ciano/50"></i>
+                                </div>
+                                <div class="p-4">
+                                    <h4 class="text-xl font-serif font-bold text-white mb-2">Esempio Opera</h4>
+                                    <p class="text-gray-300 mb-3">Descrizione dettagliata dell'opera e delle tecniche utilizzate</p>
+                                    <p class="text-magenta font-bold">€XXX</p>
+                                </div>
+                            </div>
+                            
+                            <div class="border border-ciano/30 rounded-lg overflow-hidden">
+                                <div class="h-48 bg-gradient-to-br from-magenta/20 to-ciano/20 flex items-center justify-center">
+                                    <i class="fas fa-image text-4xl text-ciano/50"></i>
+                                </div>
+                                <div class="p-4">
+                                    <h4 class="text-xl font-serif font-bold text-white mb-2">Esempio Opera</h4>
+                                    <p class="text-gray-300 mb-3">Descrizione dettagliata dell'opera e delle tecniche utilizzate</p>
+                                    <p class="text-magenta font-bold">€XXX</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-8 space-y-4">
+                            <a href="#contact" class="text-magenta hover:text-magenta/80 transition font-medium">
+                                
+                            </a>
+                            <button id="load-more-products" class="bg-magenta hover:bg-magenta/90 text-white px-6 py-3 rounded-lg font-medium transition hidden">
+                                Mostrami di più
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-magenta/20 flex items-center justify-center text-magenta mr-4 mt-1">
+                                    <i class="fas fa-vial"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-medium text-white mb-1">Collezione Diafanizzazione</h4>
+                                    <p class="text-gray-300">
+                                        Esemplari trattati con la tecnica della diafanizzazione, che rende i tessuti trasparenti evidenziando ossa e cartilagini. Include pesci, anfibi e piccoli mammiferi.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-ciano/20 flex items-center justify-center text-ciano mr-4 mt-1">
+                                    <i class="fas fa-atom"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-medium text-white mb-1">Collezione Plastinazione</h4>
+                                    <p class="text-gray-300">
+                                        Organi e sezioni anatomiche conservate attraverso plastinazione, perfette per studi dettagliati. Include cervelli, cuori e altri organi interni di varie specie.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-magenta/20 flex items-center justify-center text-magenta mr-4 mt-1">
+                                    <i class="fas fa-bone"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-medium text-white mb-1">Collezione Osteologica</h4>
+                                    <p class="text-gray-300">
+                                        Scheletri completi preparati con metodi tradizionali, perfetti per studio anatomico o esposizione artistica. Include uccelli, rettili e mammiferi di varie dimensioni.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-16 text-center">
+                    <a href="#contact" class="inline-block bg-gradient-to-r from-magenta to-ciano text-dark px-8 py-3 rounded-full font-medium transition duration-300 transform hover:scale-105">
+                        Sei interessato a qualche animale? Contattami!
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Ethics Section -->
+        <section id="ethics" class="py-20 bg-dark border-t border-b border-ciano/20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4">
+                        <span class="text-magenta">Etica</span>
+                        <span class="text-ciano"> e Sostenibilità</span>
+                    </h2>
+                    <p class="text-gray-300 max-w-3xl mx-auto">
+                        Il nostro approccio responsabile alla conservazione animale
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 class="text-2xl font-serif font-bold text-white mb-6">I Nostri Principi Etici</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-magenta/20 text-magenta">
+                                        <i class="fas fa-heart"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-medium text-white">Origine Etica degli Esemplari</h4>
+                                    <p class="mt-2 text-gray-300">
+                                        Tutti gli animali utilizzati provengono da fonti etiche: decessi naturali, programmi di controllo della popolazione, o donazioni da istituzioni scientifiche. Mai da uccisioni finalizzate al solo scopo artistico.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-ciano/20 text-ciano">
+                                        <i class="fas fa-recycle"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-medium text-white">Minimo Impatto Ambientale</h4>
+                                    <p class="mt-2 text-gray-300">
+                                        Utilizziamo prodotti chimici a basso impatto e ricicliamo tutti i materiali possibili. I fluidi di conservazione vengono smaltiti secondo le normative ambientali.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-magenta/20 text-magenta">
+                                        <i class="fas fa-book"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-medium text-white">Educazione e Consapevolezza</h4>
+                                    <p class="mt-2 text-gray-300">
+                                        Ogni opera è accompagnata da informazioni scientifiche che educano sulla biologia della specie e sull'importanza della conservazione della biodiversità.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-dark border border-ciano/20 rounded-lg p-8">
+                        <h3 class="text-2xl font-serif font-bold text-ciano mb-6">Domande Frequenti</h3>
+                        
+                        <div class="space-y-4">
+                            <div class="border-b border-ciano/20 pb-4">
+                                <button class="faq-question flex justify-between items-center w-full text-left text-white font-medium">
+                                    <span>Da dove provengono gli animali che utilizzate?</span>
+                                    <i class="fas fa-chevron-down text-magenta transition-transform duration-300"></i>
+                                </button>
+                                <div class="faq-answer mt-2 text-gray-300 hidden">
+                                    <p>L'85% proviene da decessi naturali di animali domestici, il 10% da programmi di controllo della popolazione autorizzati, e il restante 5% da donazioni di musei e istituzioni scientifiche. Mai acquistiamo animali vivi per i nostri scopi.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="border-b border-ciano/20 pb-4">
+                                <button class="faq-question flex justify-between items-center w-full text-left text-white font-medium">
+                                    <span>È legale possedere queste opere?</span>
+                                    <i class="fas fa-chevron-down text-magenta transition-transform duration-300"></i>
+                                </button>
+                                <div class="faq-answer mt-2 text-gray-300 hidden">
+                                    <p>Tutte le opere sono accompagnate da documentazione che ne attesta la provenienza legale. Per specie protette forniamo certificati CITES quando richiesto. Verifichiamo sempre le normative locali prima di spedire.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="border-b border-ciano/20 pb-4">
+                                <button class="faq-question flex justify-between items-center w-full text-left text-white font-medium">
+                                    <span>Come posso essere sicuro che il mio animale sarà trattato con rispetto?</span>
+                                    <i class="fas fa-chevron-down text-magenta transition-transform duration-300"></i>
+                                </button>
+                                <div class="faq-answer mt-2 text-gray-300 hidden">
+                                    <p>Ogni esemplare viene trattato con la massima dignità. Offriamo la possibilità di seguire il processo attraverso aggiornamenti fotografici e manteniamo un registro di tutti gli animali che ci vengono affidati, con la possibilità di una cerimonia privata al termine del processo.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- About Section -->
+        <section id="about" class="py-20 bg-dark">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div class="order-2 lg:order-1">
+                        <h2 class="text-3xl md:text-4xl font-serif font-bold mb-6">
+                            <span class="text-magenta">Irene</span>
+                            <span class="text-ciano"> Andreatta</span>
+                        </h2>
+                        <p class="text-gray-300 mb-6">
+                            Con una formazione in biologia e una passione per l'arte, ho unito questi due mondi per creare Scientia Mortis. Il mio obiettivo è trasformare la percezione della morte animale da tabù a opportunità di apprendimento e apprezzamento estetico.
+                        </p>
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-magenta/20 p-2 rounded-full text-magenta">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-white font-medium">Laurea in Biologia Animale</p>
+                                    <p class="text-gray-300 text-sm">Università di Padova, 2018</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-ciano/20 p-2 rounded-full text-ciano">
+                                    <i class="fas fa-certificate"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-white font-medium">Certificato in Tecniche di Conservazione</p>
+                                    <p class="text-gray-300 text-sm">Istituto di Anatomia Comparata, Berlino 2020</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-magenta/20 p-2 rounded-full text-magenta">
+                                    <i class="fas fa-palette"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-white font-medium">Mostre d'Arte Scientifica</p>
+                                    <p class="text-gray-300 text-sm">Esposizioni a Milano, Vienna e Barcellona</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="order-1 lg:order-2">
+                        <div class="relative">
+                            <div class="w-full h-96 bg-gradient-to-br from-magenta/20 to-ciano/20 rounded-lg"></div>
+                            <div class="absolute -bottom-4 -right-4 bg-dark border border-ciano/20 p-2 rounded-lg w-3/4">
+                                <p class="text-white italic">"Nella morte c'è bellezza, nella conservazione c'è eternità, nella scienza c'è comprensione."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 bg-dark border-t border-b border-ciano/20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4">
+                        <span class="text-ciano">Contattaci</span>
+                        <span class="text-magenta"> per Maggiori Informazioni</span>
+                    </h2>
+                    <p class="text-gray-300 max-w-3xl mx-auto">
+                        Compila il form per richiedere informazioni sui nostri servizi o per prenotare una consulenza
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <div>
+                        <form id="contact-form" class="space-y-6" action="send_email.php" method="POST" style="display: none;">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-white mb-1">Nome Completo</label>
+                                <input type="text" id="name" name="name" required class="form-input w-full bg-dark border border-ciano/20 rounded-md px-4 py-2 text-white focus:border-magenta">
+                            </div>
+                            
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-white mb-1">Email</label>
+                                <input type="email" id="email" name="email" required class="form-input w-full bg-dark border border-ciano/20 rounded-md px-4 py-2 text-white focus:border-magenta">
+                            </div>
+                            
+                            <div>
+                                <label for="phone" class="block text-sm font-medium text-white mb-1">Telefono (opzionale)</label>
+                                <input type="tel" id="phone" name="phone" class="form-input w-full bg-dark border border-ciano/20 rounded-md px-4 py-2 text-white focus:border-magenta">
+                            </div>
+                            
+                            <div>
+                                <label for="service" class="block text-sm font-medium text-white mb-1">Servizio di Interesse</label>
+                                <select id="service" name="service" class="form-input w-full bg-dark border border-ciano/20 rounded-md px-4 py-2 text-white focus:border-magenta">
+                                    <option value="">Seleziona un servizio</option>
+                                    <option value="memorial">Memoriale per Animale Domestico</option>
+                                    <option value="diafanization">Diafanizzazione</option>
+                                    <option value="plastination">Plastinazione</option>
+                                    <option value="osteology">Preparazione Osteologica</option>
+                                    <option value="other">Altro</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label for="message" class="block text-sm font-medium text-white mb-1">Messaggio</label>
+                                <textarea id="message" name="message" rows="5" required class="form-input w-full bg-dark border border-ciano/20 rounded-md px-4 py-2 text-white focus:border-magenta"></textarea>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <input type="checkbox" id="privacy" name="privacy" required class="h-4 w-4 text-magenta focus:ring-magenta border-ciano/20 rounded">
+                                <label for="privacy" class="ml-2 block text-sm text-gray-300">
+                                    Acconsento al trattamento dei miei dati personali secondo la 
+                                    <a href="/privacy-policy" class="text-ciano hover:underline">Privacy Policy</a>
+                                </label>
+                            </div>
+                            
+                            <div>
+                                <button type="submit" class="w-full bg-gradient-to-r from-magenta to-ciano text-dark px-6 py-3 rounded-md font-medium hover:opacity-90 transition">
+                                    Invia Richiesta
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="space-y-8">
+                        <div class="bg-dark border border-magenta/20 rounded-lg p-6">
+                            <h3 class="text-xl font-serif font-bold text-magenta mb-4">Informazioni di Contatto</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-magenta/20 flex items-center justify-center text-magenta mr-4">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-medium text-white mb-1">Studio</h4>
+                                        <p class="text-gray-300">
+                                            Via della Scienza 42<br>
+                                            35100 Padova, Italia
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-ciano/20 flex items-center justify-center text-ciano mr-4">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-medium text-white mb-1">Email</h4>
+                                        <p class="text-gray-300">
+                                            info@scientiamortis.it<br>
+                                            irene.andreatta@scientiamortis.it
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-magenta/20 flex items-center justify-center text-magenta mr-4">
+                                        <i class="fas fa-phone-alt"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-medium text-white mb-1">Telefono</h4>
+                                        <p class="text-gray-300">
+                                            +39 049 123 4567<br>
+                                            Disponibile dalle 9:00 alle 18:00
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="flex space-x-4">
+                            <a href="https://www.instagram.com/scientia_mortis?igsh=NHFmbTV6bXN0MTQ3" class="h-10 w-10 rounded-full bg-magenta/20 flex items-center justify-center text-magenta hover:bg-magenta/30 transition" target="_blank" rel="noopener noreferrer">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="https://www.facebook.com/share/15rJHgTcqy/" class="h-10 w-10 rounded-full bg-magenta/20 flex items-center justify-center text-magenta hover:bg-magenta/30 transition" target="_blank" rel="noopener noreferrer">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="https://wa.me/qr/WJUOV74BD3FVL1" class="h-10 w-10 rounded-full bg-magenta/20 flex items-center justify-center text-magenta hover:bg-magenta/30 transition" target="_blank" rel="noopener noreferrer">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-dark border-t border-ciano/20 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-serif font-bold text-white mb-4">
+                        <span class="text-ciano">Scientia</span>
+                        <span class="text-magenta">Mortis</span>
+                    </h3>
+                    <p class="text-gray-300">
+                        L'arte e la scienza si incontrano nella conservazione della vita oltre la morte.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-sm font-semibold text-ciano uppercase tracking-wider mb-4">Esplora</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-300 hover:text-white transition">Home</a></li>
+                        <li><a href="#gallery" class="text-gray-300 hover:text-white transition">Galleria</a></li>
+                        <li><a href="#services" class="text-gray-300 hover:text-white transition">Servizi</a></li>
+                        <li><a href="#ethics" class="text-gray-300 hover:text-white transition">Etica</a></li>
+                        <li><a href="#about" class="text-gray-300 hover:text-white transition">About</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-sm font-semibold text-ciano uppercase tracking-wider mb-4">Servizi</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Memoriali</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Diafanizzazione</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Plastinazione</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Osteologia</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Conservazione in Alcool</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-sm font-semibold text-ciano uppercase tracking-wider mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/privacy-policy" class="text-gray-300 hover:text-white transition">Privacy Policy</a></li>
+                        <li><a href="/cookie-policy" class="text-gray-300 hover:text-white transition">Cookie Policy</a></li>
+                        <li><a href="/terms" class="text-gray-300 hover:text-white transition">Termini e Condizioni</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Certificazioni</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Normative CITES</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-12 pt-8 border-t border-ciano/10 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm">
+                    &copy; 2025 Scientia Mortis. Tutti i diritti riservati.
+                </p>
+                <div class="mt-4 md:mt-0 flex space-x-6">
+                    <a href="https://www.instagram.com/scientia_mortis?igsh=NHFmbTV6bXN0MTQ3" class="text-gray-400 hover:text-gray-300" target="_blank" rel="noopener noreferrer">
+                        <span class="sr-only">Facebook</span>
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.facebook.com/share/15rJHgTcqy/" class="text-gray-400 hover:text-gray-300" target="_blank" rel="noopener noreferrer">
+                        <span class="sr-only">Instagram</span>
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://wa.me/qr/WJUOV74BD3FVL1" class="text-gray-400 hover:text-gray-300" target="_blank" rel="noopener noreferrer">
+                        <span class="sr-only">WhatsApp</span>
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+        
+        // Gallery filter functionality
+        const galleryFilters = document.querySelectorAll('.gallery-filter');
+        const galleryGrid = document.getElementById('gallery-grid');
+        
+        // Sample gallery data - in a real implementation, this would come from a database or CMS
+        const galleryItems = [
+            {
+                id: 1,
+                title: "Rana diafanizzata",
+                category: "diafanizzazione",
+                date: "Maggio 2025",
+                description: "Esemplare di Rana temporaria sottoposto a processo di diafanizzazione. I tessuti sono stati resi trasparenti con enzimi proteolitici, mentre ossa e cartilagine sono state colorate rispettivamente di rosso e blu con alizarina e azzurro di metilene. Questo metodo permette di osservare l'anatomia interna senza dissezione.",
+                imageUrl: "https://images.unsplash.com/photo-1559253664-ca249d4608c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+            },
+            {
+                id: 2,
+                title: "Cervello di ratto plastinato",
+                category: "plastinazione",
+                date: "Marzo 2025",
+                description: "Cervello di Rattus norvegicus conservato con tecnica di plastinazione. Il tessuto cerebrale è stato disidratato in acetone e impregnato con polimeri siliconici sotto vuoto. Il risultato è un preparato permanente, resistente, che mantiene le caratteristiche morfologiche originali senza bisogno di liquidi conservanti. Ideale per studi anatomici.",
+                imageUrl: "https://images.unsplash.com/photo-1575505586569-646b2ca898fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80"
+            },
+            {
+                id: 3,
+                title: "Scheletro di gatto",
+                category: "osteologia",
+                date: "Gennaio 2025",
+                description: "Scheletro completo di Felis catus preparato manualmente. Dopo la macerazione enzimatica e lo sgrassamento, le ossa sono state sbiancate con perossido di idrogeno e montate su supporto metallico. La posizione riflette l'anatomia naturale dell'animale in movimento. Contiene 244 ossa, comprese quelle della coda.",
+                imageUrl: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1143&q=80"
+            },
+            {
+                id: 4,
+                title: "Collezione di serpenti in alcool",
+                category: "alcool",
+                date: "Febbraio 2025",
+                description: "Serie di serpenti italiani conservati in soluzione alcolica al 70%. Da sinistra: Natrix natrix (biscia dal collare), Vipera aspis (vipera comune), Zamenis longissimus (saettone). La conservazione in alcool permette di mantenere la flessibilità e il colore originale degli esemplari. I contenitori sono sigillati ermeticamente per evitare evaporazione.",
+                imageUrl: "https://images.unsplash.com/photo-1546180245-c59500a30179?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+            },
+            {
+                id: 5,
+                title: "Pipistrello diafanizzato",
+                category: "diafanizzazione",
+                date: "Aprile 2025",
+                description: "Pipistrello della specie Pipistrellus pipistrellus dopo processo di diafanizzazione. Le membrane alari sono perfettamente visibili nella loro struttura, dimostrando l'adattamento evolutivo al volo. Le ossa delle dita, eccezionalmente allungate, sostengono la membrana. Preparato particolarmente utile per studi di biomeccanica del volo.",
+                imageUrl: "https://images.unsplash.com/photo-1585452237674-1c17c0c2acc3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+            },
+            {
+                id: 6,
+                title: "Cuore di maiale plastinato",
+                category: "plastinazione",
+                date: "Giugno 2025",
+                description: "Cuore di Sus scrofa domestica sezionato e plastinato per mostrare l'anatomia interna. La plastinazione permette di mantenere le strutture cardiache (valvole, setti, vasi) nella loro posizione naturale, facilitando lo studio della circolazione. Il preparato è stato colorato per differenziare atri, ventricoli e principali vasi sanguigni.",
+                imageUrl: "https://images.unsplash.com/photo-1574680178050-55c6a6a96fe0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+            },
+            {
+                id: 7,
+                title: "Farfalla diafanizzata",
+                category: "diafanizzazione",
+                date: "Luglio 2025",
+                description: "Esemplare di Vanessa atalanta sottoposto a diafanizzazione. Le delicate ali sono state trattate con una soluzione speciale per mantenere la struttura delle venature mentre il corpo è stato reso trasparente per mostrare l'anatomia interna. Un processo che richiede estrema precisione data la fragilità dell'esemplare.",
+                imageUrl: "https://images.unsplash.com/photo-1531303435785-3853ba035fd6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+            }
+        ];
+        
+        // Gallery variables
+        let visibleItems = 6;
+        const itemsPerLoad = 3;
+        let currentCategory = 'all';
+
+        // Render gallery items
+        function renderGallery(items, initialLoad = false) {
+            if (initialLoad) {
+                galleryGrid.innerHTML = '';
+                visibleItems = 6;
+            }
+            
+            // Show only visible items
+            const itemsToShow = items.slice(0, visibleItems);
+            
+            itemsToShow.forEach(item => {
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item bg-dark border border-ciano/20 rounded-lg overflow-hidden';
+                galleryItem.dataset.category = item.category;
+                galleryItem.innerHTML = `
+                    <div class="relative group">
+                        <img src="${item.imageUrl}" alt="${item.title}" class="w-full h-64 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                            <div>
+                                <h3 class="text-white font-serif font-bold">${item.title}</h3>
+                                <p class="text-ciano text-sm">${item.date}</p>
+                            </div>
+                        </div>
+                        <button class="gallery-modal-open absolute top-4 right-4 bg-magenta/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" data-id="${item.id}">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-gray-300 text-sm line-clamp-2">${item.description}</p>
+                    </div>
+                `;
+                galleryGrid.appendChild(galleryItem);
+            });
+            
+            // Add modal open event listeners
+            document.querySelectorAll('.gallery-modal-open').forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = parseInt(this.dataset.id);
+                    const item = galleryItems.find(i => i.id === itemId);
+                    if (item) {
+                        document.getElementById('modal-image').src = item.imageUrl;
+                        document.getElementById('modal-image').alt = item.title;
+                        document.getElementById('modal-title').textContent = item.title;
+                        document.getElementById('modal-date').textContent = item.date;
+                        document.getElementById('modal-description').textContent = item.description;
+                        document.getElementById('gallery-modal').classList.remove('hidden');
+                        document.body.style.overflow = 'hidden';
+                    }
+                });
+            });
+        }
+        
+        // Initial render
+        renderGallery(galleryItems, true);
+        toggleLoadMoreButton();
+        updateBackgroundOpacity();
+
+        // Load more button functionality
+        document.getElementById('load-more-btn').addEventListener('click', function() {
+            visibleItems += itemsPerLoad;
+            const filteredItems = currentCategory === 'all' 
+                ? galleryItems 
+                : galleryItems.filter(item => item.category === currentCategory);
+            renderGallery(filteredItems);
+            toggleLoadMoreButton(filteredItems);
+        });
+
+        // Toggle load more button visibility
+        function toggleLoadMoreButton(items = galleryItems) {
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            if (visibleItems < items.length) {
+                loadMoreBtn.classList.remove('hidden');
+            } else {
+                loadMoreBtn.classList.add('hidden');
+            }
+        }
+        
+        // Filter gallery items
+        galleryFilters.forEach(filter => {
+            filter.addEventListener('click', function() {
+                // Update active filter
+                galleryFilters.forEach(f => f.classList.remove('bg-magenta', 'bg-ciano', 'text-dark', 'hover:bg-magenta', 'hover:bg-ciano'));
+                const isMagenta = this.classList.contains('border-magenta');
+                if (isMagenta) {
+                    this.classList.add('bg-magenta', 'text-dark');
+                    this.classList.remove('text-magenta', 'hover:bg-magenta');
+                } else {
+                    this.classList.add('bg-ciano', 'text-dark');
+                    this.classList.remove('text-ciano', 'hover:bg-ciano');
+                }
+                
+                // Filter items
+                currentCategory = this.dataset.category;
+                const filteredItems = currentCategory === 'all' 
+                    ? galleryItems 
+                    : galleryItems.filter(item => item.category === currentCategory);
+                renderGallery(filteredItems, true);
+                toggleLoadMoreButton(filteredItems);
+            });
+        });
+        
+        // Close modal
+        document.getElementById('close-modal').addEventListener('click', function() {
+            document.getElementById('gallery-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        });
+        
+        // FAQ accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', function() {
+                const answer = this.nextElementSibling;
+                const icon = this.querySelector('i');
+                
+                answer.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+            });
+        });
+        
+        // Form submission
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Mostra messaggio di caricamento
+            alert('Stiamo inviando il tuo messaggio...');
+            
+            // Invia i dati via AJAX
+            const form = this;
+            const formData = new FormData(form);
+            
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data); // Mostra la risposta dal server
+                form.reset(); // Resetta il form
+            })
+            .catch(error => {
+                alert('Si è verificato un errore durante l\'invio: ' + error);
+            });
+        });
+        
+        // Language selector functionality
+        document.querySelectorAll('.language-selector').forEach(selector => {
+            selector.addEventListener('click', function(e) {
+                e.preventDefault();
+                const lang = this.dataset.lang;
+                // In a real implementation, this would change the language of the page
+                alert(`Language changed to ${lang}. In a real implementation, this would translate the page.`);
+            });
+        });
+        
+        // Cookie Consent Functionality
+        function checkCookieConsent() {
+            const consent = localStorage.getItem('cookieConsent');
+            if (!consent) {
+                document.getElementById('cookie-consent-banner').classList.remove('hidden');
+            }
+        }
+
+        document.getElementById('cookie-consent-accept').addEventListener('click', function() {
+            localStorage.setItem('cookieConsent', 'accepted');
+            document.getElementById('cookie-consent-banner').classList.add('hidden');
+            // Load analytics and tracking scripts here
+        });
+
+        document.getElementById('cookie-consent-reject').addEventListener('click', function() {
+            localStorage.setItem('cookieConsent', 'rejected');
+            document.getElementById('cookie-consent-banner').classList.add('hidden');
+            // Clear any existing cookies
+        });
+
+        document.getElementById('cookie-consent-customize').addEventListener('click', function() {
+            // Show cookie preferences modal
+            alert('Mostra qui le preferenze avanzate dei cookie');
+        });
+
+        // Check cookie consent on page load
+        checkCookieConsent();
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                if (this.getAttribute('href') !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                        
+                        // Update active nav link
+                        document.querySelectorAll('.nav-link').forEach(link => {
+                            link.classList.remove('active-nav');
+                        });
+                        if (this.classList.contains('nav-link')) {
+                            this.classList.add('active-nav');
+                        }
+                        
+                        // Close mobile menu if open
+                        document.getElementById('mobile-menu').classList.add('hidden');
+                    }
+                }
+            });
+        });
+        
+        // Background fade effect on scroll
+        const heroSection = document.getElementById('home');
+        const fadeEnd = document.getElementById('services').offsetTop;
+        
+        function updateBackgroundOpacity() {
+            const scrollPosition = window.pageYOffset;
+            const heroHeight = heroSection.offsetHeight;
+            
+            if (scrollPosition < fadeEnd) {
+                const opacity = 1 - (scrollPosition / fadeEnd);
+                heroSection.querySelector('div').style.opacity = opacity;
+            } else {
+                heroSection.querySelector('div').style.opacity = 0;
+            }
+        }
+        
+        // Set active nav link based on scroll position
+        window.addEventListener('scroll', function() {
+            updateBackgroundOpacity();
+            
+            const sections = document.querySelectorAll('section');
+            let current = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 300) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active-nav');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active-nav');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
