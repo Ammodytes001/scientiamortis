@@ -1,50 +1,3 @@
-
-<?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Recupera i dati dal form
-    $name = strip_tags(trim($_POST["name"]));
-    $email = filter_var(trim($_POST["email"]), FILTER_SANITIZE_EMAIL);
-    $phone = strip_tags(trim($_POST["phone"]));
-    $service = strip_tags(trim($_POST["service"]));
-    $message = strip_tags(trim($_POST["message"]));
-
-    // Verifica i dati
-    if (empty($name) || empty($message) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        http_response_code(400);
-        echo "Si è verificato un errore nell'invio. Per favore controlla i dati inseriti.";
-        exit;
-    }
-
-    // Destinatario
-    $recipient = "scientia_mortis@outlook.it";
-    
-    // Oggetto della mail
-    $subject = "Nuovo messaggio da $name via Scientia Mortis";
-    
-    // Costruisci il contenuto della mail
-    $email_content = "Nome: $name\n";
-    $email_content .= "Email: $email\n";
-    $email_content .= "Telefono: $phone\n";
-    $email_content .= "Servizio di interesse: $service\n\n";
-    $email_content .= "Messaggio:\n$message\n";
-    
-    // Intestazioni della mail
-    $email_headers = "From: $name <$email>";
-
-    // Invia la mail
-    if (mail($recipient, $subject, $email_content, $email_headers)) {
-        http_response_code(200);
-        echo "Grazie! Il tuo messaggio è stato inviato con successo.";
-    } else {
-        http_response_code(500);
-        echo "Ops! Qualcosa è andato storto e non siamo riusciti a inviare il tuo messaggio.";
-    }
-} else {
-    http_response_code(403);
-    echo "Si è verificato un problema con l'invio, per favore riprova.";
-}
-?>
-
 <!DOCTYPE html>
 <html lang="it" class="scroll-smooth">
 <head>
@@ -256,7 +209,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </nav>
     
     <!-- Hero Section -->
-    <section id="home" class="hero-gradient min-h-screen flex items-center justify-center relative overflow-hidden" style="background-image: url('https://images.unsplash.com/photo-1575505586569-646b2ca898fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80'); background-size: cover; background-position: center; background-attachment: fixed;">
+    <section id="home" class="hero-gradient min-h-screen flex items-center justify-center relative overflow-hidden" style="background-image: url('https://github.com/Ammodytes001/scientiamortis/blob/main/logo%20rettangolare.png?raw=true'); background-size: cover; background-position: center 1px; background-attachment: fixed;">
         <div class="absolute inset-0 bg-gradient-to-b from-transparent via-dark/70 to-dark"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative z-10">
             <div class="text-center">
@@ -757,69 +710,77 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </section>
         
-        <!-- Contact Section -->
-        <section id="contact" class="py-20 bg-dark border-t border-b border-ciano/20">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-16">
-                    <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4">
-                        <span class="text-ciano">Contattaci</span>
-                        <span class="text-magenta"> per Maggiori Informazioni</span>
-                    </h2>
-                    <p class="text-gray-300 max-w-3xl mx-auto">
-                        Compila il form per richiedere informazioni sui nostri servizi o per prenotare una consulenza
-                    </p>
-                </div>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                    <div>
-                        <form id="contact-form" class="space-y-6" action="send_email.php" method="POST" style="display: none;">
-                            <div>
-                                <label for="name" class="block text-sm font-medium text-white mb-1">Nome Completo</label>
-                                <input type="text" id="name" name="name" required class="form-input w-full bg-dark border border-ciano/20 rounded-md px-4 py-2 text-white focus:border-magenta">
-                            </div>
-                            
-                            <div>
-                                <label for="email" class="block text-sm font-medium text-white mb-1">Email</label>
-                                <input type="email" id="email" name="email" required class="form-input w-full bg-dark border border-ciano/20 rounded-md px-4 py-2 text-white focus:border-magenta">
-                            </div>
-                            
-                            <div>
-                                <label for="phone" class="block text-sm font-medium text-white mb-1">Telefono (opzionale)</label>
-                                <input type="tel" id="phone" name="phone" class="form-input w-full bg-dark border border-ciano/20 rounded-md px-4 py-2 text-white focus:border-magenta">
-                            </div>
-                            
-                            <div>
-                                <label for="service" class="block text-sm font-medium text-white mb-1">Servizio di Interesse</label>
-                                <select id="service" name="service" class="form-input w-full bg-dark border border-ciano/20 rounded-md px-4 py-2 text-white focus:border-magenta">
-                                    <option value="">Seleziona un servizio</option>
-                                    <option value="memorial">Memoriale per Animale Domestico</option>
-                                    <option value="diafanization">Diafanizzazione</option>
-                                    <option value="plastination">Plastinazione</option>
-                                    <option value="osteology">Preparazione Osteologica</option>
-                                    <option value="other">Altro</option>
-                                </select>
-                            </div>
-                            
-                            <div>
-                                <label for="message" class="block text-sm font-medium text-white mb-1">Messaggio</label>
-                                <textarea id="message" name="message" rows="5" required class="form-input w-full bg-dark border border-ciano/20 rounded-md px-4 py-2 text-white focus:border-magenta"></textarea>
-                            </div>
-                            
-                            <div class="flex items-center">
-                                <input type="checkbox" id="privacy" name="privacy" required class="h-4 w-4 text-magenta focus:ring-magenta border-ciano/20 rounded">
-                                <label for="privacy" class="ml-2 block text-sm text-gray-300">
-                                    Acconsento al trattamento dei miei dati personali secondo la 
-                                    <a href="/privacy-policy" class="text-ciano hover:underline">Privacy Policy</a>
-                                </label>
-                            </div>
-                            
-                            <div>
-                                <button type="submit" class="w-full bg-gradient-to-r from-magenta to-ciano text-dark px-6 py-3 rounded-md font-medium hover:opacity-90 transition">
-                                    Invia Richiesta
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+<!-- Contact Section -->
+<section id="contact" class="py-20 bg-dark border-t border-b border-ciano/20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4">
+        <span class="text-ciano">Contattaci</span>
+        <span class="text-magenta"> per Maggiori Informazioni</span>
+      </h2>
+      <p class="text-gray-300 max-w-3xl mx-auto">
+        Compila il form per richiedere informazioni sui nostri servizi o per prenotare una consulenza
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <div>
+        <form id="contact-form" class="space-y-6" action="https://formspree.io/f/xvgqrajl" method="POST">
+          <div>
+            <label for="name" class="block text-sm font-medium text-white mb-1">Nome Completo</label>
+            <input type="text" id="name" name="name" required class="form-input w-full bg-dark border border-ciano/20 rounded-md px-4 py-2 text-white focus:border-magenta">
+          </div>
+
+          <div>
+            <label for="email" class="block text-sm font-medium text-white mb-1">Email</label>
+            <input type="email" id="email" name="email" required class="form-input w-full bg-dark border border-ciano/20 rounded-md px-4 py-2 text-white focus:border-magenta">
+          </div>
+
+          <div>
+            <label for="phone" class="block text-sm font-medium text-white mb-1">Telefono (opzionale)</label>
+            <input type="tel" id="phone" name="phone" class="form-input w-full bg-dark border border-ciano/20 rounded-md px-4 py-2 text-white focus:border-magenta">
+          </div>
+
+          <div>
+            <label for="service" class="block text-sm font-medium text-white mb-1">Servizio di Interesse</label>
+            <select id="service" name="service" class="form-input w-full bg-dark border border-ciano/20 rounded-md px-4 py-2 text-white focus:border-magenta">
+              <option value="">Seleziona un servizio</option>
+              <option value="memorial">Memoriale per Animale Domestico</option>
+              <option value="diafanization">Diafanizzazione</option>
+              <option value="plastination">Plastinazione</option>
+              <option value="osteology">Preparazione Osteologica</option>
+              <option value="other">Altro</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="message" class="block text-sm font-medium text-white mb-1">Messaggio</label>
+            <textarea id="message" name="message" rows="5" required class="form-input w-full bg-dark border border-ciano/20 rounded-md px-4 py-2 text-white focus:border-magenta"></textarea>
+          </div>
+
+          <div class="flex items-center">
+            <input type="checkbox" id="privacy" name="privacy" required class="h-4 w-4 text-magenta focus:ring-magenta border-ciano/20 rounded">
+            <label for="privacy" class="ml-2 block text-sm text-gray-300">
+              Acconsento al trattamento dei miei dati personali secondo la 
+              <a href="/privacy-policy" class="text-ciano hover:underline">Privacy Policy</a>
+            </label>
+          </div>
+
+          <div>
+            <button type="submit" class="w-full bg-gradient-to-r from-magenta to-ciano text-dark px-6 py-3 rounded-md font-medium hover:opacity-90 transition">
+              Invia Richiesta
+            </button>
+          </div>
+
+          <p id="success-message" class="text-green-500 font-medium mt-4 hidden">
+            Grazie per averci contattato! Risponderemo il prima possibile.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
                     
                     <div class="space-y-8">
                         <div class="bg-dark border border-magenta/20 rounded-lg p-6">
@@ -1276,5 +1237,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             });
         });
     </script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("contact-form");
+    const successMessage = document.getElementById("success-message");
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      const response = await fetch(form.action, {
+        method: "POST",
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        form.reset();
+        successMessage.classList.remove("hidden");
+      } else {
+        alert("Errore nell'invio del messaggio. Riprova più tardi.");
+      }
+    });
+  });
+</script>
 </body>
 </html>
