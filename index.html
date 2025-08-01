@@ -1,6 +1,16 @@
+
 <!DOCTYPE html>
 <html lang="it" class="scroll-smooth">
 <head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KDD48L68MG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-KDD48L68MG');
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scientia Mortis - Arte e Scienza nella Conservazione Animale</title>
@@ -921,7 +931,7 @@
             const menu = document.getElementById('mobile-menu');
             menu.classList.toggle('hidden');
         });
-        
+        let previousScrollPosition = 0;
         // Gallery filter functionality
         const galleryFilters = document.querySelectorAll('.gallery-filter');
         const galleryGrid = document.getElementById('gallery-grid');
@@ -1027,21 +1037,25 @@
             
             // Add modal open event listeners
             document.querySelectorAll('.gallery-modal-open').forEach(button => {
-                button.addEventListener('click', function() {
-                    const itemId = parseInt(this.dataset.id);
-                    const item = galleryItems.find(i => i.id === itemId);
-                    if (item) {
-                        document.getElementById('modal-image').src = item.imageUrl;
-                        document.getElementById('modal-image').alt = item.title;
-                        document.getElementById('modal-title').textContent = item.title;
-                        document.getElementById('modal-date').textContent = item.date;
-                        document.getElementById('modal-description').textContent = item.description;
-                        document.getElementById('gallery-modal').classList.remove('hidden');
-                        document.body.style.overflow = 'hidden';
-                    }
-                });
-            });
+    button.addEventListener('click', function () {
+        const itemId = parseInt(this.dataset.id);
+        const item = galleryItems.find(i => i.id === itemId);
+        if (item) {
+            // Salva la posizione corrente dello scroll
+            previousScrollPosition = window.pageYOffset;
+
+            // Popola e mostra la modale
+            document.getElementById('modal-image').src = item.imageUrl;
+            document.getElementById('modal-image').alt = item.title;
+            document.getElementById('modal-title').textContent = item.title;
+            document.getElementById('modal-date').textContent = item.date;
+            document.getElementById('modal-description').textContent = item.description;
+            document.getElementById('gallery-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         }
+    });
+});
+
         
         // Initial render
         renderGallery(galleryItems, true);
@@ -1093,10 +1107,17 @@
         });
         
         // Close modal
-        document.getElementById('close-modal').addEventListener('click', function() {
-            document.getElementById('gallery-modal').classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        });
+        document.getElementById('close-modal').addEventListener('click', function () {
+    document.getElementById('gallery-modal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+
+    // Torna alla posizione precedente
+    window.scrollTo({
+        top: previousScrollPosition,
+        behavior: 'smooth'
+    });
+});
+;
         
         // FAQ accordion
         document.querySelectorAll('.faq-question').forEach(question => {
@@ -1145,33 +1166,52 @@
         });
         
         // Cookie Consent Functionality
-        function checkCookieConsent() {
-            const consent = localStorage.getItem('cookieConsent');
-            if (!consent) {
-                document.getElementById('cookie-consent-banner').classList.remove('hidden');
-            }
-        }
+        <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const banner = document.getElementById('cookie-consent-banner');
+    const acceptBtn = document.getElementById('cookie-consent-accept');
+    const rejectBtn = document.getElementById('cookie-consent-reject');
+    const customizeBtn = document.getElementById('cookie-consent-customize');
 
-        document.getElementById('cookie-consent-accept').addEventListener('click', function() {
-            localStorage.setItem('cookieConsent', 'accepted');
-            document.getElementById('cookie-consent-banner').classList.add('hidden');
-            // Load analytics and tracking scripts here
-        });
+    const cookieConsent = localStorage.getItem('cookieConsent');
 
-        document.getElementById('cookie-consent-reject').addEventListener('click', function() {
-            localStorage.setItem('cookieConsent', 'rejected');
-            document.getElementById('cookie-consent-banner').classList.add('hidden');
-            // Clear any existing cookies
-        });
+    if (!cookieConsent) {
+        banner.classList.remove('hidden');
+    } else if (cookieConsent === 'accepted') {
+        loadOptionalScripts();
+    }
 
-        document.getElementById('cookie-consent-customize').addEventListener('click', function() {
-            // Show cookie preferences modal
-            alert('Mostra qui le preferenze avanzate dei cookie');
-        });
+    acceptBtn.addEventListener('click', () => {
+        localStorage.setItem('cookieConsent', 'accepted');
+        banner.classList.add('hidden');
+        loadOptionalScripts(); // <-- carica gli script come Analytics solo se c'è il consenso
+    });
 
-        // Check cookie consent on page load
-        checkCookieConsent();
+    rejectBtn.addEventListener('click', () => {
+        localStorage.setItem('cookieConsent', 'rejected');
+        banner.classList.add('hidden');
+        // opzionalmente: cancella cookie non essenziali
+    });
 
+    customizeBtn.addEventListener('click', () => {
+        alert("Qui potresti mostrare una finestra per gestire i cookie in modo personalizzato.");
+    });
+
+    // Carica script opzionali (es. Analytics) SOLO se accettati
+    function loadOptionalScripts() {
+        // 👉 Esempio: Google Analytics (modifica con il tuo ID!)
+        const gaScript = document.createElement('script');
+        gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-KDD48L68MG'; // <-- sostituisci con il tuo ID
+        gaScript.async = true;
+        document.head.appendChild(gaScript);
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-KDD48L68MG'); // <-- sostituisci anche qui
+    }
+});
+</script>
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
