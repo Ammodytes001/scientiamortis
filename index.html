@@ -132,6 +132,21 @@
         .theme-transition {
             transition: background-color 0.3s ease, color 0.3s ease;
         }
+
+        /* Typing animation */
+        .typing-cursor {
+            display: inline-block;
+            width: 0.15em;
+            height: 1em;
+            background-color: white;
+            animation: blink 1s infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
     </style>
 </head>
 <body class="theme-transition">
@@ -195,12 +210,12 @@
                     </a>
                 </div>
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#home" class="nav-link text-white px-3 py-2 text-sm font-medium active-nav">Home</a>
-                    <a href="#gallery" class="nav-link text-white px-3 py-2 text-sm font-medium">Galleria</a>
-                    <a href="#services" class="nav-link text-white px-3 py-2 text-sm font-medium">Servizi</a>
-                    <a href="#ethics" class="nav-link text-white px-3 py-2 text-sm font-medium">Etica</a>
-                    <a href="#about" class="nav-link text-white px-3 py-2 text-sm font-medium">About</a>
-                    <a href="#contact" class="nav-link text-white px-3 py-2 text-sm font-medium">Contatti</a>
+                    <a href="#home" class="nav-link text-white px-3 py-2 text-sm font-medium active-nav"data-i18n="nav.home">Home</a>
+                    <a href="#gallery" class="nav-link text-white px-3 py-2 text-sm font-medium"data-i18n="nav.gallery">Galleria</a>
+                    <a href="#services" class="nav-link text-white px-3 py-2 text-sm font-medium"data-i18n="nav.services">Servizi</a>
+                    <a href="#ethics" class="nav-link text-white px-3 py-2 text-sm font-medium"data-i18n="nav.ethics">Etica</a>
+                    <a href="#about" class="nav-link text-white px-3 py-2 text-sm font-medium"data-i18n="nav.about">About</a>
+                    <a href="#contact" class="nav-link text-white px-3 py-2 text-sm font-medium"data-i18n="nav.contact">Contatti</a>
                 </div>
                 <div class="-mr-2 flex items-center md:hidden">
                     <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
@@ -231,18 +246,19 @@
         <div id="hero-overlay" class="absolute inset-0 bg-gradient-to-b from-transparent via-dark/70 to-dark transition-opacity duration-500"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative z-10">
             <div class="text-center">
-                <h1 class="text-4xl md:text-6xl font-serif font-bold mb-6 [text-shadow:_0_2px_10px_rgb(0_0_0_/_80%)]">
-                    <span class="text-ciano">Scientia</span>
-                    <span class="text-magenta">Mortis</span>
+                <h1 class="text-4xl md:text-6xl font-serif font-bold mb-6 [text-shadow:_0_2px_10px_rgb(0_0_0_/_80%)]" id="typing-title">
+                    <span class="text-ciano" id="scientia-part"></span>
+                    <span class="text-magenta" id="mortis-part"></span>
+                    <span class="typing-cursor"></span>
                 </h1>
-                <p class="text-xl md:text-2xl text-white max-w-3xl mx-auto mb-10">
+                <p class="text-xl md:text-2xl text-white max-w-3xl mx-auto mb-10"data-i18n="hero.subtitle">
                     La scienza è trasparente. A volte letteralmente.
                 </p>
                 <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="#gallery" class="bg-magenta hover:bg-magenta/90 text-white px-8 py-3 rounded-full font-medium transition duration-300 transform hover:scale-105">
+                    <a href="#gallery" class="bg-magenta hover:bg-magenta/90 text-white px-8 py-3 rounded-full font-medium transition duration-300 transform hover:scale-105"data-i18n="cta.gallery">
                         Esplora la Galleria
                     </a>
-                    <a href="#services" class="bg-ciano hover:bg-ciano/90 text-dark px-8 py-3 rounded-full font-medium transition duration-300 transform hover:scale-105">
+                    <a href="#services" class="bg-ciano hover:bg-ciano/90 text-dark px-8 py-3 rounded-full font-medium transition duration-300 transform hover:scale-105"data-i18n="cta.services">
                         Scopri i Servizi
                     </a>
                 </div>
@@ -902,10 +918,10 @@
                 <div>
                     <h4 class="text-sm font-semibold text-ciano uppercase tracking-wider mb-4">Legal</h4>
                     <ul class="space-y-2">
-                        <li><a href="javascript:void(0)" id="cookie-preferences-link" class="text-gray-300 hover:text-white transition">Rivedi preferenze cookie</a>
+                        <li><a href="javascript:void(0)" id="cookie-preferences-link" class="text-gray-300 hover:text-white transition"data-i18n="footer.review">Rivedi preferenze cookie</a>
                         </li>
-                        <li><a href="privacy-policy.html" class="text-gray-300 hover:text-white transition">Privacy Policy</a></li>
-                        <li><a href="cookie-policy.html" class="text-gray-300 hover:text-white transition">Cookie Policy</a></li>
+                        <li><a href="privacy-policy.html" class="text-gray-300 hover:text-white transition"data-i18n="footer.privacy">Privacy Policy</a></li>
+                        <li><a href="cookie-policy.html" class="text-gray-300 hover:text-white transition"data-i18n="footer.cookies">Cookie Policy</a></li>
                         <li><a href="termini-servizio.html" class="text-gray-300 hover:text-white transition">Termini e Condizioni</a></li>
                         <li><a href="#" class="text-gray-300 hover:text-white transition">Certificazioni</a></li>
                         <li><a href="https://cites.org/eng" class="text-gray-300 hover:text-white transition" target="_blank" rel="noopener noreferrer">Che cos'è la CITES?</a></li>
@@ -1225,6 +1241,37 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 <script>        
+        // Typing animation for title
+        function typeWriter(text, element, speed, callback) {
+            let i = 0;
+            function typing() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(typing, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            typing();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const scientiaPart = document.getElementById('scientia-part');
+            const mortisPart = document.getElementById('mortis-part');
+            
+            // Start typing "Scientia"
+            typeWriter('Scientia', scientiaPart, 100, () => {
+                // After "Scientia" is done, start typing "Mortis"
+                setTimeout(() => {
+                    typeWriter('Mortis', mortisPart, 100, () => {
+                        // Animation complete, remove cursor
+                        document.querySelector('.typing-cursor').style.display = 'none';
+                    });
+                }, 300); // Short pause between words
+            });
+        });
+
         // Background fade effect on scroll
         const heroSection = document.getElementById('home');
         const fadeEnd = document.getElementById('services').offsetTop;
@@ -1366,6 +1413,179 @@ document.addEventListener("DOMContentLoaded", function () {
         location.reload(true);
       });
     }
+  });
+</script>
+<script>
+  const translations = {
+    it: {
+      "home.title": "Benvenuto su Scientia Mortis",
+      "home.subtitle": "Dove arte e scienza si incontrano.",
+      "nav.home": "Home",
+      "nav.gallery": "Galleria",
+      "nav.services": "Servizi",
+      "nav.ethics": "Etica",
+      "nav.about": "Chi sono",
+      "nav.contact": "Contatti",
+      "cta.gallery": "Esplora la galleria",
+      "cta.services": "Scopri i servizi",
+      "footer.privacy": "Privacy Policy",
+      "footer.cookies": "Cookie Policy",
+      "footer.review": "Rivedi preferenze cookie"
+    },
+    en: {
+      "home.title": "Welcome to Scientia Mortis",
+      "home.subtitle": "Where art and science meet.",
+      "nav.home": "Home",
+      "nav.gallery": "Gallery",
+      "nav.services": "Services",
+      "nav.ethics": "Ethics",
+      "nav.about": "About",
+      "nav.contact": "Contact",
+      "cta.gallery": "Explore the gallery",
+      "cta.services": "Discover the services",
+      "footer.privacy": "Privacy Policy",
+      "footer.cookies": "Cookie Policy",
+      "footer.review": "Review cookie preferences"
+    },
+    fr: {
+      "home.title": "Bienvenue sur Scientia Mortis",
+      "home.subtitle": "Là où l'art et la science se rencontrent.",
+      "nav.home": "Accueil",
+      "nav.gallery": "Galerie",
+      "nav.services": "Services",
+      "nav.ethics": "Éthique",
+      "nav.about": "À propos",
+      "nav.contact": "Contact",
+      "cta.gallery": "Explorer la galerie",
+      "cta.services": "Découvrir les services",
+      "footer.privacy": "Politique de confidentialité",
+      "footer.cookies": "Politique relative aux cookies",
+      "footer.review": "Revoir les préférences de cookies"
+    },
+    de: {
+      "home.title": "Willkommen bei Scientia Mortis",
+      "home.subtitle": "Wo Kunst und Wissenschaft sich begegnen.",
+      "nav.home": "Startseite",
+      "nav.gallery": "Galerie",
+      "nav.services": "Dienstleistungen",
+      "nav.ethics": "Ethik",
+      "nav.about": "Über mich",
+      "nav.contact": "Kontakt",
+      "cta.gallery": "Galerie erkunden",
+      "cta.services": "Dienstleistungen entdecken",
+      "footer.privacy": "Datenschutzrichtlinie",
+      "footer.cookies": "Cookie-Richtlinie",
+      "footer.review": "Cookie-Einstellungen überprüfen"
+    }
+  };
+
+  function setLanguage(lang) {
+    localStorage.setItem('language', lang);
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (translations[lang] && translations[lang][key]) {
+        el.textContent = translations[lang][key];
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const savedLang = localStorage.getItem('language') || 'it';
+    setLanguage(savedLang);
+
+    const toggle = document.getElementById('language-toggle');
+    toggle?.addEventListener('click', () => {
+      const current = localStorage.getItem('language') || 'it';
+      const languages = ['it', 'en', 'fr', 'de'];
+      const next = languages[(languages.indexOf(current) + 1) % languages.length];
+      setLanguage(next);
+    });
+  });
+</script>
+<script>
+  const translations = {
+    it: {
+      "nav.home": "Home",
+      "nav.gallery": "Galleria",
+      "nav.services": "Servizi",
+      "nav.ethics": "Etica",
+      "nav.about": "About",
+      "nav.contact": "Contatti",
+      "hero.subtitle": "La scienza è trasparente. A volte letteralmente.",
+      "cta.gallery": "Esplora la galleria",
+      "cta.services": "Scopri i servizi",
+      "footer.privacy": "Privacy Policy",
+      "footer.cookies": "Cookie Policy",
+      "footer.review": "Rivedi preferenze cookie"
+    },
+    en: {
+      "nav.home": "Home",
+      "nav.gallery": "Gallery",
+      "nav.services": "Services",
+      "nav.ethics": "Ethics",
+      "nav.about": "About",
+      "nav.contact": "Contact",
+      "hero.title": "Where do animals end up? Here begins the wonder.",
+      "hero.subtitle": "From muscle to bone, from science to art: discover the hidden beauty of organic matter.",
+      "cta.gallery": "Explore the gallery",
+      "cta.services": "Discover the services",
+      "footer.privacy": "Privacy Policy",
+      "footer.cookies": "Cookie Policy",
+      "footer.review": "Review cookie preferences"
+    },
+    fr: {
+      "nav.home": "Accueil",
+      "nav.gallery": "Galerie",
+      "nav.services": "Services",
+      "nav.ethics": "Éthique",
+      "nav.about": "À propos",
+      "nav.contact": "Contact",
+      "hero.title": "Où vont les animaux ? Voici le début de l’émerveillement.",
+      "hero.subtitle": "Du muscle à l’os, de la science à l’art : découvrez la beauté cachée de la matière organique.",
+      "cta.gallery": "Explorer la galerie",
+      "cta.services": "Découvrir les services",
+      "footer.privacy": "Politique de confidentialité",
+      "footer.cookies": "Politique relative aux cookies",
+      "footer.review": "Modifier les préférences de cookies"
+    },
+    de: {
+      "nav.home": "Startseite",
+      "nav.gallery": "Galerie",
+      "nav.services": "Dienstleistungen",
+      "nav.ethics": "Ethik",
+      "nav.about": "Über mich",
+      "nav.contact": "Kontakt",
+      "hero.title": "Wo landen Tiere? Hier beginnt das Staunen.",
+      "hero.subtitle": "Vom Muskel bis zum Knochen, von der Wissenschaft zur Kunst: Entdecke die verborgene Schönheit organischer Materie.",
+      "cta.gallery": "Galerie erkunden",
+      "cta.services": "Dienstleistungen entdecken",
+      "footer.privacy": "Datenschutzrichtlinie",
+      "footer.cookies": "Cookie-Richtlinie",
+      "footer.review": "Cookie-Einstellungen bearbeiten"
+    }
+  };
+
+  function setLanguage(lang) {
+    localStorage.setItem('language', lang);
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (translations[lang] && translations[lang][key]) {
+        el.textContent = translations[lang][key];
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const savedLang = localStorage.getItem('language') || 'it';
+    setLanguage(savedLang);
+
+    const toggle = document.getElementById('language-toggle');
+    toggle?.addEventListener('click', () => {
+      const current = localStorage.getItem('language') || 'it';
+      const languages = ['it', 'en', 'fr', 'de'];
+      const next = languages[(languages.indexOf(current) + 1) % languages.length];
+      setLanguage(next);
+    });
   });
 </script>
 </body>
