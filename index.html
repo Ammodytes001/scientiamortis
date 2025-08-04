@@ -1511,7 +1511,8 @@ document.addEventListener("DOMContentLoaded", function () {
       "nav.ethics": "Etica",
       "nav.about": "About",
       "nav.contact": "Contatti",
-      "hero.subtitle": "La scienza è trasparente. A volte letteralmente.",
+      "hero.title": "Dove finiscono gli animali? Inizia la meraviglia.",
+      "hero.subtitle": "Dal muscolo all’osso, dalla scienza all’arte: scopri la bellezza nascosta della materia organica.",
       "cta.gallery": "Esplora la galleria",
       "cta.services": "Scopri i servizi",
       "footer.privacy": "Privacy Policy",
@@ -1546,7 +1547,7 @@ document.addEventListener("DOMContentLoaded", function () {
       "cta.services": "Découvrir les services",
       "footer.privacy": "Politique de confidentialité",
       "footer.cookies": "Politique relative aux cookies",
-      "footer.review": "Modifier les préférences de cookies"
+      "footer.review": "Revoir les préférences de cookies"
     },
     de: {
       "nav.home": "Startseite",
@@ -1580,12 +1581,14 @@ document.addEventListener("DOMContentLoaded", function () {
     setLanguage(savedLang);
 
     const toggle = document.getElementById('language-toggle');
-    toggle?.addEventListener('click', () => {
-      const current = localStorage.getItem('language') || 'it';
-      const languages = ['it', 'en', 'fr', 'de'];
-      const next = languages[(languages.indexOf(current) + 1) % languages.length];
-      setLanguage(next);
-    });
+    if (toggle) {
+      toggle.addEventListener('click', () => {
+        const langs = ['it', 'en', 'fr', 'de'];
+        const current = localStorage.getItem('language') || 'it';
+        const next = langs[(langs.indexOf(current) + 1) % langs.length];
+        setLanguage(next);
+      });
+    }
   });
 </script>
 </body>
