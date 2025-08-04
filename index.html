@@ -137,22 +137,30 @@
 <body class="theme-transition">
     <!-- Cookie Consent Banner -->
     <div id="cookie-consent-banner" class="fixed bottom-0 left-0 right-0 bg-dark border-t border-ciano/20 p-4 z-50 hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row items-center justify-between">
+  <div class="class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div>
+ 	<div class="flex flex-col md:flex-row items-center justify-between">
                 <p class="text-gray-300 mb-4 md:mb-0">
-                    Questo sito utilizza cookie per migliorare la tua esperienza. Leggi la nostra 
-                    <a href="/cookie-policy" class="text-ciano hover:underline">Cookie Policy</a>.
+                    Questo sito utilizza cookie per migliorare la tua esperienza. Leggi 		    la nostra 
+                    <a href="privacy-policy.html" class="text-ciano hover:underline">Cookie Policy</a>.
                 </p>
-                <div class="flex space-x-4">
-                    <button id="cookie-consent-accept" class="bg-magenta hover:bg-magenta/90 text-white px-4 py-2 rounded-md text-sm font-medium">
-                        Accetta tutti
-                    </button>
-                    <button id="cookie-consent-reject" class="bg-dark border border-ciano/20 hover:bg-ciano/10 text-white px-4 py-2 rounded-md text-sm font-medium">
-                        Rifiuta
-                    </button>
-                    <button id="cookie-consent-customize" class="bg-dark border border-ciano/20 hover:bg-ciano/10 text-white px-4 py-2 rounded-md text-sm font-medium">
-                        Personalizza
-                    </button>
+      <!-- Sezione personalizzazione -->
+      <div id="cookie-settings" class="flex space-x-4 hidden">
+        <p class="mb-2 font-semibold">Seleziona quali cookie vuoi abilitare:</p>
+        <label class="block mb-2">
+          <input type="checkbox" id="analytics-cookies" class="mr-2" />
+          Cookie analitici (es. Google Analytics)
+        </label>
+        <div class="flex gap-2 mt-2">
+          <button id="save-cookie-settings" class="bg-dark border border-ciano/20 hover:bg-ciano/10 text-green px-4 py-2 rounded-md text-sm font-medium">Salva preferenze</button>
+          <button id="cancel-cookie-settings" class=""bg-dark border border-ciano/20 hover:bg-ciano/10 text-red px-4 py-2 rounded-md text-sm font-medium">Annulla</button>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col md:flex-row gap-2">
+      <button id="accept-cookies" class="bg-magenta hover:bg-magenta/90 text-white px-4 py-2 rounded-md text-sm font-medium">Accetta tutti</button>
+      <button id="reject-cookies" class=""bg-dark border border-ciano/20 hover:bg-ciano/10 text-white px-4 py-2 rounded-md text-sm font-medium">Rifiuta</button>
+      <button id="customize-cookies" class="bg-dark border border-ciano/20 hover:bg-ciano/10 text-white px-4 py-2 rounded-md text-sm font-medium">Personalizza</button>
                 </div>
             </div>
         </div>
@@ -223,7 +231,7 @@
         <div id="hero-overlay" class="absolute inset-0 bg-gradient-to-b from-transparent via-dark/70 to-dark transition-opacity duration-500"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative z-10">
             <div class="text-center">
-                <h1 class="text-4xl md:text-6xl font-serif font-bold mb-6">
+                <h1 class="text-4xl md:text-6xl font-serif font-bold mb-6 [text-shadow:_0_2px_10px_rgb(0_0_0_/_80%)]">
                     <span class="text-ciano">Scientia</span>
                     <span class="text-magenta">Mortis</span>
                 </h1>
@@ -894,7 +902,8 @@
                 <div>
                     <h4 class="text-sm font-semibold text-ciano uppercase tracking-wider mb-4">Legal</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-300 hover:text-white transition">Rivedi preferenze cookie</a></li>
+                        <li><a href="javascript:void(0)" id="cookie-preferences-link" class="text-gray-300 hover:text-white transition">Rivedi preferenze cookie</a>
+                        </li>
                         <li><a href="privacy-policy.html" class="text-gray-300 hover:text-white transition">Privacy Policy</a></li>
                         <li><a href="cookie-policy.html" class="text-gray-300 hover:text-white transition">Cookie Policy</a></li>
                         <li><a href="termini-servizio.html" class="text-gray-300 hover:text-white transition">Termini e Condizioni</a></li>
@@ -1289,7 +1298,74 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById('cookie-preferences-link')?.addEventListener('click', function(e) {
     e.preventDefault();
     localStorage.removeItem('cookieConsent');
-    location.reload();
+    location.reload(true);
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const banner = document.getElementById('cookie-consent-banner');
+    const acceptBtn = document.getElementById('accept-cookies');
+    const rejectBtn = document.getElementById('reject-cookies');
+    const customizeBtn = document.getElementById('customize-cookies');
+    const settingsPanel = document.getElementById('cookie-settings');
+    const saveSettingsBtn = document.getElementById('save-cookie-settings');
+    const cancelSettingsBtn = document.getElementById('cancel-cookie-settings');
+    const analyticsCheckbox = document.getElementById('analytics-cookies');
+
+    function loadOptionalScripts() {
+      const gaScript = document.createElement('script');
+      gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-KDD48L68MG';
+      gaScript.async = true;
+      document.head.appendChild(gaScript);
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-KDD48L68MG');
+    }
+
+    const cookieConsent = JSON.parse(localStorage.getItem('cookieConsent'));
+    if (!cookieConsent) {
+      banner.classList.remove('hidden');
+    } else if (cookieConsent.analytics === true) {
+      loadOptionalScripts();
+    }
+
+    acceptBtn.addEventListener('click', () => {
+      localStorage.setItem('cookieConsent', JSON.stringify({ analytics: true }));
+      banner.classList.add('hidden');
+      loadOptionalScripts();
+    });
+
+    rejectBtn.addEventListener('click', () => {
+      localStorage.setItem('cookieConsent', JSON.stringify({ analytics: false }));
+      banner.classList.add('hidden');
+    });
+
+    customizeBtn.addEventListener('click', () => {
+      settingsPanel.classList.remove('hidden');
+    });
+
+    cancelSettingsBtn.addEventListener('click', () => {
+      settingsPanel.classList.add('hidden');
+    });
+
+    saveSettingsBtn.addEventListener('click', () => {
+      const analytics = analyticsCheckbox.checked;
+      localStorage.setItem('cookieConsent', JSON.stringify({ analytics }));
+      banner.classList.add('hidden');
+      settingsPanel.classList.add('hidden');
+      if (analytics) loadOptionalScripts();
+    });
+
+    // Rivedi preferenze cookie
+    const reviewBtn = document.getElementById('cookie-preferences-link');
+    if (reviewBtn) {
+      reviewBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        localStorage.removeItem('cookieConsent');
+        location.reload(true);
+      });
+    }
   });
 </script>
 </body>
