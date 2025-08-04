@@ -190,11 +190,11 @@
             <button id="language-toggle" class="bg-dark border-2 border-magenta text-white rounded-full w-12 h-12 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-ciano">
                 <i class="fas fa-globe text-xl"></i>
             </button>
-            <div id="language-dropdown" class="hidden group-hover:block absolute bottom-full right-0 mb-2 w-48 bg-dark border border-ciano rounded-lg shadow-lg">
-                <a href="#" class="block px-4 py-2 text-white hover:bg-magenta language-selector" data-lang="it">Italiano</a>
-                <a href="#" class="block px-4 py-2 text-white hover:bg-magenta language-selector" data-lang="en">English</a>
-                <a href="#" class="block px-4 py-2 text-white hover:bg-magenta language-selector" data-lang="fr">Français</a>
-                <a href="#" class="block px-4 py-2 text-white hover:bg-magenta language-selector" data-lang="de">Deutsch</a>
+            <div id="language-menu" class="hidden group-hover:block absolute bottom-full right-0 mb-2 w-48 bg-dark border border-ciano rounded-lg shadow-lg">
+                <a href="#" class="block px-4 py-2 text-white hover:bg-magenta language-option" data-lang="it">Italiano</a>
+                <a href="#" class="block px-4 py-2 text-white hover:bg-magenta language-option" data-lang="en">English</a>
+                <a href="#" class="block px-4 py-2 text-white hover:bg-magenta language-option" data-lang="fr">Français</a>
+                <a href="#" class="block px-4 py-2 text-white hover:bg-magenta language-option" data-lang="de">Deutsch</a>
             </div>
         </div>
     </div>
@@ -1490,7 +1490,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    const savedLang = localStorage.getItem('language') || 'it';
+    const savedLang = localStorage.getItem('language') || 'en';
     setLanguage(savedLang);
 
     const toggle = document.getElementById('language-toggle');
@@ -1577,18 +1577,26 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    const savedLang = localStorage.getItem('language') || 'it';
+    const savedLang = localStorage.getItem('language') || 'en';
     setLanguage(savedLang);
 
+    // Mostra/nasconde la tendina delle lingue
     const toggle = document.getElementById('language-toggle');
-    if (toggle) {
-      toggle.addEventListener('click', () => {
-        const langs = ['it', 'en', 'fr', 'de'];
-        const current = localStorage.getItem('language') || 'it';
-        const next = langs[(langs.indexOf(current) + 1) % langs.length];
-        setLanguage(next);
+    const menu = document.getElementById('language-menu');
+
+    toggle?.addEventListener('click', () => {
+      menu?.classList.toggle('hidden');
+    });
+
+    // Clic su una lingua del menu
+    document.querySelectorAll('.language-option').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const lang = link.getAttribute('data-lang');
+        setLanguage(lang);
+        menu?.classList.add('hidden');
       });
-    }
+    });
   });
 </script>
 </body>
